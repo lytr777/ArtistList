@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Artists</string>
+    <string name="wait">Please wait, loading data</string>
+    <string name="tracks_and_albums">%1$d albums, %2$d tracks</string>
+    <string name="biography">Biography</string>
+
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+    <string name="pref_description_full_caching">Caching large covers for each artist</string>
+    <string name="pref_title_full_caching">Full caching</string>
+    <string name="pref_title_language">Language</string>
+    <string name="pref_description_language">Set the language of the application</string>
+    <string name="pref_dialog_title_language">Choose language</string>
+
+    <string-array name="pref_array_language">
+        <item>Русский</item>
+        <item>English</item>
+    </string-array>
+</resources>

@@ -1,0 +1,19 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Кэш">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="full_caching_switch"
+            android:summary="@string/pref_description_full_caching"
+            android:title="@string/pref_title_full_caching" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Язык">
+        <ListPreference
+            android:defaultValue="1"
+            android:key="language_list"
+            android:title="@string/pref_title_language"
+            android:summary="@string/pref_description_language"
+            android:entries="@array/pref_array_language"
+            android:entryValues="@array/pref_array_language"
+            android:dialogTitle="@string/pref_dialog_title_language" />
+    </PreferenceCategory>
+</PreferenceScreen>

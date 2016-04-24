@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/zero_activity_vertical_margin"
+    android:paddingLeft="@dimen/zero_activity_horizontal_margin"
+    android:paddingRight="@dimen/zero_activity_horizontal_margin"
+    android:paddingTop="@dimen/zero_activity_vertical_margin"
+    tools:context="com.mobiledevelopment.www.artistlist.ArtistInfoActivity"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:layout_alignTop="@+id/cover"
+            android:layout_toEndOf="@+id/cover"
+            android:layout_toRightOf="@+id/cover">
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/big_cover_progress"
+                android:layout_gravity="center_horizontal"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+            <ImageView
+                android:id="@+id/artist_cover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:scaleType="centerCrop"
+                android:minHeight="60dp" />
+
+            <TextView
+                android:id="@+id/artist_genres"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/artist_cover"
+                android:layout_marginTop="10dp"
+                android:text="g???"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_marginLeft="16dp" />
+
+            <TextView
+                android:id="@+id/artist_tracks_and_albums"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="at???"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_below="@+id/artist_genres"
+                android:layout_alignLeft="@+id/artist_genres"
+                android:layout_alignStart="@+id/artist_genres" />
+
+            <TextView
+                android:id="@+id/biography"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/biography"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_below="@+id/artist_tracks_and_albums"
+                android:layout_alignLeft="@+id/artist_tracks_and_albums"
+                android:layout_alignStart="@+id/artist_tracks_and_albums" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="d?"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_below="@+id/biography"
+                android:layout_alignLeft="@+id/biography"
+                android:layout_alignStart="@+id/biography"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp" />
+        </RelativeLayout>
+    </ScrollView>
+
+</LinearLayout>

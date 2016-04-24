@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Исполнители</string>
+    <string name="wait">Пожалуйста подождите, данные загружаются</string>
+    <string name="tracks_and_albums">%1$d альбомов, %2$d песен</string>
+    <string name="biography">Биография</string>
+
+    <string name="title_activity_settings">Настройки</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="pref_title_full_caching">Полное кэширование</string>
+    <string name="pref_description_full_caching">Кэширование больших обложек для каждого исполнителя</string>
+    <string name="pref_title_language">Язык</string>
+    <string name="pref_description_language">Установить язык приложения</string>
+    <string name="pref_dialog_title_language">Выберите язык</string>
+
+    <string-array name="pref_array_language">
+            <item>Русский</item>
+            <item>English</item>
+        </string-array>
+</resources>
