@@ -1,7 +1,6 @@
 package com.mobiledevelopment.www.artistlist;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,9 +10,8 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,15 +27,15 @@ import com.mobiledevelopment.www.artistlist.settings.SettingsActivity;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.prefs.Preferences;
 
 /**
- * The type Artist info activity.
+ * Экран с подробной информацией о исполнителе.
  */
 public class ArtistInfoActivity extends AppCompatActivity {
 
     private ProgressBar progress;
     private ImageView bigCover;
+    private Button reload;
 
     private SaveFragment saveFragment;
     private Container container;
@@ -76,6 +74,9 @@ public class ArtistInfoActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(element.name);
         progress = (ProgressBar) findViewById(R.id.big_cover_progress);
         bigCover = (ImageView) findViewById(R.id.artist_cover);
+        reload = (Button) findViewById(R.id.info_reload_button);
+        reload.setText(R.string.connection_error_button);
+        reload.setVisibility(View.INVISIBLE);
         // заполняем данными поля.
         TextView genres = (TextView) findViewById(R.id.artist_genres);
         TextView albumsAndTracks = (TextView) findViewById(R.id.artist_tracks_and_albums);
@@ -85,10 +86,10 @@ public class ArtistInfoActivity extends AppCompatActivity {
                 element.albums, element.tracks));
         description.setText(element.name + " - " + element.description);
 
-        downloadCover(element);
+        downloadCover();
     }
 
-    private void downloadCover(Data element) {
+    private void downloadCover() {
         if (downloadCoverTask == null) {
             // Создаем новый таск, только если не было ранее запущенного таска
             downloadCoverTask = new DownloadCoverTask(this, element.getIdAndUrlPair('b'));
@@ -99,22 +100,17 @@ public class ArtistInfoActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.list_action_settings) {
-            // запускаем экран настроек
-            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
+    /**
+     * Пытаемся повторно загрузить данные.
+     *
+     * @param view view элемент обьекта, вызвавшего метод.
+     */
+    public void tryReload (View view) {
+        if (view.getId() == R.id.info_reload_button) {
+            progress.setVisibility(View.VISIBLE);
+            reload.setVisibility(View.INVISIBLE);
+            downloadCover();
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -167,14 +163,18 @@ public class ArtistInfoActivity extends AppCompatActivity {
         protected void onPostExecute(Bitmap result) {
             if (result != null) {
                 activity.downloadCoverTask = null;
-                activity.progress.setVisibility(View.INVISIBLE);
                 activity.bigCover.setImageBitmap(result);
-            } else
-                Toast.makeText(activity.getApplicationContext(), "Ошибка загрузки, проверьте " +
-                        "подключение к интернету", Toast.LENGTH_LONG).show();
+            } else {
+                activity.downloadCoverTask = null;
+                activity.reload.setVisibility(View.VISIBLE);
+                Toast.makeText(activity.getApplicationContext(), R.string.connection_error,
+                        Toast.LENGTH_LONG).show();
+            }
+            activity.progress.setVisibility(View.INVISIBLE);
         }
 
         private Bitmap downloadFile(Context context, long id, URL url) throws IOException {
+            // Смотрим в насройках нужно ли отдельно кэшировать каждую обложку.
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
             if (preferences.getBoolean(SettingsActivity.KEY_FULL_CACHING, false)) {
                 Pair<File, Boolean> exist = CreateFile.createCacheFile(context, id + "_big_cover");

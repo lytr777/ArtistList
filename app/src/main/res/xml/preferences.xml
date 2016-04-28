@@ -8,12 +8,12 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="Язык">
         <ListPreference
-            android:defaultValue="1"
+            android:defaultValue="default"
             android:key="language_list"
             android:title="@string/pref_title_language"
             android:summary="@string/pref_description_language"
             android:entries="@array/pref_array_language"
-            android:entryValues="@array/pref_array_language"
+            android:entryValues="@array/pref_values_array_language"
             android:dialogTitle="@string/pref_dialog_title_language" />
     </PreferenceCategory>
 </PreferenceScreen>

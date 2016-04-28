@@ -22,7 +22,7 @@ public class DownloadFile {
      * @param downloadUrl ссылка на загружаемый файл.
      * @param destFile    Файл в который будем записывать.
      * @throws IOException если не можем открыть/закрыть соединения, или ответ от сервера отличен
-     * от <code>HttpURLConnection.HTTP_OK</code>.
+     *                     от <code>HttpURLConnection.HTTP_OK</code>.
      */
     public static void downloadFile(URL downloadUrl, File destFile) throws IOException {
         HttpURLConnection conn = (HttpURLConnection) downloadUrl.openConnection();

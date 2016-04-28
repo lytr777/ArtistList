@@ -22,11 +22,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/wait"
         android:id="@+id/wait"
         android:layout_below="@+id/cover_progress"
         android:layout_centerHorizontal="true"
-        android:gravity="center" />
+        android:gravity="center"
+        android:text="wait?" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="reload?"
+        android:id="@+id/list_reload_button"
+        android:layout_below="@+id/wait"
+        android:layout_centerHorizontal="true"
+        android:onClick="tryReload" />
 
     <ListView
         android:layout_width="wrap_content"
@@ -34,4 +43,5 @@
         android:id="@+id/artist_list"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

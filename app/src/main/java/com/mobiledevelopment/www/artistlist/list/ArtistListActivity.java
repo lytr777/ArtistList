@@ -2,22 +2,24 @@ package com.mobiledevelopment.www.artistlist.list;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mobiledevelopment.www.artistlist.ArtistInfoActivity;
+import com.mobiledevelopment.www.artistlist.settings.Localisation;
 import com.mobiledevelopment.www.artistlist.R;
 import com.mobiledevelopment.www.artistlist.file.CreateFile;
 import com.mobiledevelopment.www.artistlist.file.DownloadFile;
@@ -38,14 +40,12 @@ import java.util.List;
  */
 public class ArtistListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    /**
-     * The Json link.
-     */
     public final String jsonLink = "http://download.cdn.yandex.net/mobilization-2016/artists.json";
 
     private ListView artistList;
     private ProgressBar progress;
     private TextView wait;
+    private Button reload;
 
     private SaveFragment saveFragment;
     private Container container;
@@ -54,31 +54,41 @@ public class ArtistListActivity extends AppCompatActivity implements AdapterView
     private DownloadJsonTask downloadJsonTask;
     private DownloadCoversTask downloadCoversTask;
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artist_list);
         // Применяем стандартные настройки приложения при первом запуске
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        Configuration config = Localisation.getConfig(getBaseContext(),
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
+        getResources().updateConfiguration(config, null);
+        getSupportActionBar().setTitle(R.string.app_name);
         progress = (ProgressBar) findViewById(R.id.cover_progress);
         artistList = (ListView) findViewById(R.id.artist_list);
         wait = (TextView) findViewById(R.id.wait);
-
+        wait.setText(R.string.wait);
+        reload = (Button) findViewById(R.id.list_reload_button);
+        reload.setText(R.string.connection_error_button);
+        reload.setVisibility(View.INVISIBLE);
         progress.setProgress(0);
         artistList.setOnItemClickListener(this);
 
-         // Востанавливаем состояние после поворота экрана.
+        // Востанавливаем состояние после поворота экрана.
         saveFragment = (SaveFragment) getFragmentManager().findFragmentByTag("SAVE_FRAGMENT");
         if (saveFragment != null) {
             container = saveFragment.getModel();
             downloadCoversTask = container.downloadCoversTask;
             downloadJsonTask = container.downloadJsonTask;
             data = container.data;
+            Log.d(TAG + "fr", "Фрагмент не найден");
         } else {
             saveFragment = new SaveFragment();
             getFragmentManager().beginTransaction().add(saveFragment, "SAVE_FRAGMENT")
                     .commit();
             data = null;
+            Log.d(TAG, "Фрагмент не найден");
         }
 
         downloadJson();
@@ -130,6 +140,8 @@ public class ArtistListActivity extends AppCompatActivity implements AdapterView
     }
 
     private void createList() {
+        // Перезагружаем меню опций
+        invalidateOptionsMenu();
         // Создаем экземпляр адаптера и передаем его в наш список
         ArtistAdapter adapter = new ArtistAdapter(this, data);
         artistList.setAdapter(adapter);
@@ -138,11 +150,27 @@ public class ArtistListActivity extends AppCompatActivity implements AdapterView
         wait.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     * Пытаемся повторно загрузить данные.
+     *
+     * @param view view элемент обьекта, вызвавшего метод.
+     */
+    public void tryReload(View view) {
+        if (view.getId() == R.id.list_reload_button) {
+            wait.setText(R.string.wait);
+            reload.setVisibility(View.INVISIBLE);
+            if (data == null)
+                downloadJson();
+            else
+                downloadCovers();
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_list, menu);
-        return true;
+        return (downloadJsonTask == null && downloadCoversTask == null);
     }
 
     @Override
@@ -150,10 +178,23 @@ public class ArtistListActivity extends AppCompatActivity implements AdapterView
         int id = item.getItemId();
         if (id == R.id.list_action_settings) {
             // запускаем экран настроек
-            startActivity(new Intent(this, SettingsActivity.class));
+            startActivityForResult(new Intent(this, SettingsActivity.class),
+                    SettingsActivity.SETTINGS_ACTIVITY_CODE);
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SettingsActivity.SETTINGS_ACTIVITY_CODE) {
+            if (resultCode == SettingsActivity.LANGUAGE_RESULT_CODE)
+                // Перезапускаем активити для смены языка.
+                startActivity(new Intent(this, ArtistListActivity.class));
+            startActivityForResult(new Intent(this, SettingsActivity.class),
+                    SettingsActivity.SETTINGS_ACTIVITY_CODE);
+        }
     }
 
     @Override
@@ -183,7 +224,8 @@ public class ArtistListActivity extends AppCompatActivity implements AdapterView
             this.url = url;
         }
 
-        private DownloadJsonTask() {} // заблокируем пустой конструктор.
+        private DownloadJsonTask() {
+        } // заблокируем пустой конструктор.
 
         /**
          * Смена активити.
@@ -210,9 +252,11 @@ public class ArtistListActivity extends AppCompatActivity implements AdapterView
             if (resultCode) {
                 activity.downloadJsonTask = null;
                 activity.downloadCovers();
-            } else
-                Toast.makeText(activity.getApplicationContext(), "Ошибка загрузки, проверьте подключение к интернету",
-                        Toast.LENGTH_LONG).show();
+            } else {
+                activity.downloadJsonTask = null;
+                activity.wait.setText(R.string.connection_error);
+                activity.reload.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -239,7 +283,8 @@ public class ArtistListActivity extends AppCompatActivity implements AdapterView
             current_progress = 0;
         }
 
-        private DownloadCoversTask() {} // заблокируем пустой конструктор.
+        private DownloadCoversTask() {
+        } // заблокируем пустой конструктор.
 
         /**
          * Смена активити.
@@ -282,9 +327,11 @@ public class ArtistListActivity extends AppCompatActivity implements AdapterView
             if (resultCode) {
                 activity.downloadCoversTask = null;
                 activity.createList();
-            } else
-                Toast.makeText(activity.getApplicationContext(), "Ошибка загрузки, проверьте подключение к интернету",
-                        Toast.LENGTH_LONG).show();
+            } else {
+                activity.downloadCoversTask = null;
+                activity.wait.setText(R.string.connection_error);
+                activity.reload.setVisibility(View.VISIBLE);
+            }
         }
 
         private void downloadFile(Context context, long id, URL url) throws IOException {

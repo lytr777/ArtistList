@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Artists</string>
     <string name="wait">Please wait, loading data</string>
+    <string name="connection_error">Download failed, check Internet connection</string>
+    <string name="connection_error_button">Try again</string>
     <string name="tracks_and_albums">%1$d albums, %2$d tracks</string>
     <string name="biography">Biography</string>
 
@@ -15,7 +17,13 @@
     <string name="pref_dialog_title_language">Choose language</string>
 
     <string-array name="pref_array_language">
+        <item>Default</item>
         <item>Русский</item>
         <item>English</item>
+    </string-array>
+    <string-array name="pref_values_array_language">
+        <item>default</item>
+        <item>ru</item>
+        <item>en</item>
     </string-array>
 </resources>

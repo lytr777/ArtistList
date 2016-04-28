@@ -11,15 +11,22 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".list.ArtistListActivity">
+        <activity
+            android:name=".list.ArtistListActivity"
+            android:configChanges="locale">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ArtistInfoActivity" />
-        <activity android:name=".settings.SettingsActivity" />
+
+        <activity
+            android:name=".ArtistInfoActivity"
+            android:configChanges="locale" />
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:configChanges="locale" />
     </application>
 
 </manifest>

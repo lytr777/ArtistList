@@ -85,6 +85,15 @@
                 android:layout_alignStart="@+id/biography"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="reload?"
+                android:id="@+id/info_reload_button"
+                android:layout_above="@+id/artist_genres"
+                android:layout_centerHorizontal="true"
+                android:onClick="tryReload" />
         </RelativeLayout>
     </ScrollView>
 

@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Исполнители</string>
     <string name="wait">Пожалуйста подождите, данные загружаются</string>
+    <string name="connection_error">Ошибка загрузки, проверьте подключение к интернету</string>
+    <string name="connection_error_button">Повторить попытку</string>
     <string name="tracks_and_albums">%1$d альбомов, %2$d песен</string>
     <string name="biography">Биография</string>
 
@@ -15,7 +17,13 @@
     <string name="pref_dialog_title_language">Выберите язык</string>
 
     <string-array name="pref_array_language">
+            <item>По умолчанию</item>
             <item>Русский</item>
             <item>English</item>
         </string-array>
+    <string-array name="pref_values_array_language">
+        <item>default</item>
+        <item>ru</item>
+        <item>en</item>
+    </string-array>
 </resources>
